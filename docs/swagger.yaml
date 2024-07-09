@@ -197,11 +197,11 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: Maybe Finance API
+  description: Haven Finance API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Maybe Finance API
+  title: Haven Finance API
   version: "1.0"
 paths:
   /accounts:
@@ -215,6 +215,11 @@ paths:
         in: query
         name: group_by_account_type
         type: boolean
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -224,6 +229,8 @@ paths:
             items:
               $ref: '#/definitions/responses.AccountResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get all accounts
       tags:
       - accounts
@@ -243,6 +250,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.AccountResponse'
+      security:
+      - AuthToken: []
       summary: Get an account
       tags:
       - accounts
@@ -268,6 +277,8 @@ paths:
             items:
               $ref: '#/definitions/responses.TransactionResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get an account's transactions
       tags:
       - accounts
@@ -282,6 +293,11 @@ paths:
         name: id
         required: true
         type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -295,6 +311,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Get 5 recent transactions for an account
       tags:
       - accounts
@@ -319,6 +337,11 @@ paths:
         name: transaction_schema
         required: true
         type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -332,6 +355,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Upload account transactions
       tags:
       - accounts
@@ -358,6 +383,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Create an account
       tags:
       - accounts
@@ -386,6 +413,12 @@ paths:
   /categories:
     get:
       description: Retrieve all categories
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -395,6 +428,8 @@ paths:
             items:
               $ref: '#/definitions/responses.CategoryResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get all categories
       tags:
       - categories
@@ -407,6 +442,11 @@ paths:
         name: id
         required: true
         type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -426,6 +466,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Get a category
       tags:
       - categories
@@ -441,6 +483,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/requests.CreateCategoryRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -452,6 +499,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Create a category
       tags:
       - categories
@@ -467,6 +516,11 @@ paths:
         in: query
         name: context_type
         type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -476,6 +530,8 @@ paths:
             items:
               $ref: '#/definitions/responses.CategoryResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get all category types
       tags:
       - categories
@@ -489,6 +545,11 @@ paths:
         name: account_id
         required: true
         type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -498,6 +559,8 @@ paths:
             items:
               type: object
             type: array
+      security:
+      - AuthToken: []
       summary: Get transaction histogram data
       tags:
       - data
@@ -551,6 +614,11 @@ paths:
         name: account_id
         required: true
         type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -560,12 +628,20 @@ paths:
             items:
               $ref: '#/definitions/handlers.transactionSummaryData'
             type: array
+      security:
+      - AuthToken: []
       summary: Get transactions summary data
       tags:
       - data
   /transactions:
     get:
       description: Retrieve all transactions
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -575,6 +651,8 @@ paths:
             items:
               $ref: '#/definitions/responses.TransactionResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get all transactions
       tags:
       - transactions
@@ -587,6 +665,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -594,6 +677,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.TransactionResponse'
+      security:
+      - AuthToken: []
       summary: Get a transaction
       tags:
       - transactions
@@ -606,6 +691,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -615,6 +705,8 @@ paths:
             items:
               $ref: '#/definitions/responses.TagResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get all tags for a transaction
       tags:
       - transactions
@@ -634,6 +726,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/requests.CreateTagRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -645,6 +742,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Add a tag to a transaction
       tags:
       - transactions
@@ -660,6 +759,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/requests.CreateTransactionRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -671,12 +775,20 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
       summary: Create a transaction
       tags:
       - transactions
   /transactions/schemas:
     get:
       description: Retrieve transaction schemas
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -686,12 +798,20 @@ paths:
             items:
               $ref: '#/definitions/responses.TransactionSchema'
             type: array
+      security:
+      - AuthToken: []
       summary: Get transaction schemas
       tags:
       - transactions
   /users:
     get:
       description: Retrieve all users
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -701,6 +821,8 @@ paths:
             items:
               $ref: '#/definitions/responses.UserResponse'
             type: array
+      security:
+      - AuthToken: []
       summary: Get all users
       tags:
       - users
@@ -713,6 +835,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -720,6 +847,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.UserResponse'
+      security:
+      - AuthToken: []
       summary: Get a user
       tags:
       - users

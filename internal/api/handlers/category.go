@@ -21,6 +21,8 @@ import (
 // @Success 200 {array} responses.CategoryResponse
 // @Router /categories [get]
 // @Tags categories
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetAllCategoriesHandler(c *gin.Context, db *gorm.DB) {
 	var categories []models.Category
 	db.Model(&models.Category{}).Find(&categories)
@@ -45,6 +47,8 @@ func GetAllCategoriesHandler(c *gin.Context, db *gorm.DB) {
 // @Failure 404 {object} responses.ErrorResponse
 // @Failure 500 {object} responses.ErrorResponse
 // @Tags categories
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetCategoryHandler(c *gin.Context, db *gorm.DB) {
 	var category models.Category
 	id, err := strconv.Atoi(c.Param("id"))
@@ -87,6 +91,8 @@ func getCategory(id int, db *gorm.DB) (models.Category, error) {
 // @Failure 400 {object} responses.ErrorResponse
 // @Router /categories/create [post]
 // @Tags categories
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func CreateCategoryHandler(c *gin.Context, db *gorm.DB) {
 	var createCategoryRequest requests.CreateCategoryRequest
 	err := c.ShouldBindJSON(&createCategoryRequest)
@@ -95,8 +101,12 @@ func CreateCategoryHandler(c *gin.Context, db *gorm.DB) {
 		return
 	}
 	category, err := createCategory(createCategoryRequest, db)
-	response, _ := serializers.NewCategorySerializer(*category, false).Serialize()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
+	response, err := serializers.NewCategorySerializer(*category, false).Serialize()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -122,6 +132,8 @@ func createCategory(createCategoryRequest requests.CreateCategoryRequest, db *go
 // @Param context_type query string false "Context Type"
 // @Router /categories/types [get]
 // @Tags categories
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetCategoryByContextAndContextTypeHandler(c *gin.Context, db *gorm.DB) {
 	context := c.Query("context")
 	contextType := c.Query("context_type")

@@ -20,6 +20,8 @@ import (
 // @Success 200 {array} responses.UserResponse
 // @Router /users [get]
 // @Tags users
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetAllUsersHandler(c *gin.Context, db *gorm.DB) {
 	c.JSON(http.StatusOK, getUsers(db))
 }
@@ -32,6 +34,8 @@ func GetAllUsersHandler(c *gin.Context, db *gorm.DB) {
 // @Success 200 {object} responses.UserResponse
 // @Router /users/{id} [get]
 // @Tags users
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetUserHandler(c *gin.Context, db *gorm.DB) {
 	userId, _ := strconv.Atoi(c.Param("id"))
 	user := getUser(userId, db)
@@ -61,11 +65,7 @@ func CreateUserHandler(c *gin.Context, db *gorm.DB) {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse{Message: err.Error()})
 		return
 	}
-	response := responses.CreateUserResponse{
-		ID:    newUser.ID,
-		Email: newUser.Email,
-		Name:  newUser.GetFullName(),
-	}
+	response := responses.CreateUserResponse{}.FromUser(newUser)
 	c.JSON(http.StatusCreated, response)
 }
 

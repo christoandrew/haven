@@ -34,7 +34,7 @@ func LoginHandler(c *gin.Context, db *gorm.DB) {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse{Message: err.Error()})
 		return
 	}
-	token, err := user.GenerateTokenWithClaims()
+	token, err := user.GenerateToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse{Message: err.Error()})
 		return
