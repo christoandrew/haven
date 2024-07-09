@@ -1,0 +1,52 @@
+- name: Wise
+  date_format: "2006-01-02 15:04:05"
+  mapping:
+    - name: date
+      column: "Finished on"
+      type: date
+      default: time.Now()
+    - name: amount
+      type: float
+      column: "Source amount (after fees)"
+    - name: currency
+      type: string
+      column: "Source currency"
+    - name: description
+      column: "Target name"
+      type: string
+    - name: category
+      column: "Category"
+      type: string
+      default: "General"
+    - name: type
+      column: "Direction"
+      type: string
+      default: "Credit"
+  computations:
+    - name: category
+      formula: "column['Category'] == '' ? 'General' : column['Category']"
+    - name: amount
+      formula: "column['Direction'] == 'OUT' ? column['Source amount (after fees)']*-1 : column['Source amount (after fees)']"
+
+- name: Revolut
+  date_format: "%Y-%m-%d"
+  mapping:
+    - name: date
+      column: "Finished on"
+      type: date
+    - name: amount
+      type: float
+      column: "Source amount (after fees)"
+    - name: currency
+      type: string
+      column: "Source currency"
+    - name: description
+      column: "Target name"
+      type: string
+    - name: category
+      column: "Category"
+      type: string
+      default: "General"
+
+
+
