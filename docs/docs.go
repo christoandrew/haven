@@ -25,6 +25,11 @@ const docTemplate = `{
     "paths": {
         "/accounts": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all accounts",
                 "produces": [
                     "application/json"
@@ -43,6 +48,13 @@ const docTemplate = `{
                         "description": "Group by account type",
                         "name": "group_by_account_type",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -60,6 +72,11 @@ const docTemplate = `{
         },
         "/accounts/create": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Create an account",
                 "consumes": [
                     "application/json"
@@ -100,6 +117,11 @@ const docTemplate = `{
         },
         "/accounts/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve an account",
                 "produces": [
                     "application/json"
@@ -129,6 +151,11 @@ const docTemplate = `{
         },
         "/accounts/{id}/transactions": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve an account's transactions",
                 "produces": [
                     "application/json"
@@ -167,6 +194,11 @@ const docTemplate = `{
         },
         "/accounts/{id}/transactions/recent": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Get 5 recent transactions for an account",
                 "consumes": [
                     "application/json"
@@ -184,6 +216,13 @@ const docTemplate = `{
                         "description": "Account ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -208,6 +247,11 @@ const docTemplate = `{
         },
         "/accounts/{id}/transactions/upload": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Upload account transactions",
                 "consumes": [
                     "multipart/form-data"
@@ -239,6 +283,13 @@ const docTemplate = `{
                         "description": "Transaction Schema",
                         "name": "transaction_schema",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -297,6 +348,11 @@ const docTemplate = `{
         },
         "/categories": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all categories",
                 "produces": [
                     "application/json"
@@ -305,6 +361,15 @@ const docTemplate = `{
                     "categories"
                 ],
                 "summary": "Get all categories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -320,6 +385,11 @@ const docTemplate = `{
         },
         "/categories/create": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Create a category",
                 "consumes": [
                     "application/json"
@@ -340,6 +410,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/requests.CreateCategoryRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -360,6 +437,11 @@ const docTemplate = `{
         },
         "/categories/types": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all category types",
                 "produces": [
                     "application/json"
@@ -380,6 +462,13 @@ const docTemplate = `{
                         "description": "Context Type",
                         "name": "context_type",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -397,6 +486,11 @@ const docTemplate = `{
         },
         "/categories/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve a category",
                 "produces": [
                     "application/json"
@@ -411,6 +505,13 @@ const docTemplate = `{
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -444,6 +545,11 @@ const docTemplate = `{
         },
         "/data/{account_id}/transactions/histogram": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Get transaction histogram data",
                 "produces": [
                     "application/json"
@@ -459,6 +565,13 @@ const docTemplate = `{
                         "description": "Account ID",
                         "name": "account_id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -477,6 +590,11 @@ const docTemplate = `{
         },
         "/data/{account_id}/transactions/summary": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Get transactions summary data",
                 "produces": [
                     "application/json"
@@ -550,6 +668,13 @@ const docTemplate = `{
                         "name": "account_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -567,6 +692,11 @@ const docTemplate = `{
         },
         "/transactions": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all transactions",
                 "produces": [
                     "application/json"
@@ -575,6 +705,15 @@ const docTemplate = `{
                     "transactions"
                 ],
                 "summary": "Get all transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -590,6 +729,11 @@ const docTemplate = `{
         },
         "/transactions/create": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Create a transaction",
                 "consumes": [
                     "application/json"
@@ -610,6 +754,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/requests.CreateTransactionRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -630,6 +781,11 @@ const docTemplate = `{
         },
         "/transactions/schemas": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve transaction schemas",
                 "produces": [
                     "application/json"
@@ -638,6 +794,15 @@ const docTemplate = `{
                     "transactions"
                 ],
                 "summary": "Get transaction schemas",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -653,6 +818,11 @@ const docTemplate = `{
         },
         "/transactions/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve a transaction",
                 "produces": [
                     "application/json"
@@ -668,6 +838,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -682,6 +859,11 @@ const docTemplate = `{
         },
         "/transactions/{id}/tags": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all tags for a transaction",
                 "produces": [
                     "application/json"
@@ -696,6 +878,13 @@ const docTemplate = `{
                         "description": "Transaction ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -712,6 +901,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Add a tag to a transaction",
                 "consumes": [
                     "application/json"
@@ -739,6 +933,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/requests.CreateTagRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -759,6 +960,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all users",
                 "produces": [
                     "application/json"
@@ -767,6 +973,15 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get all users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -816,6 +1031,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve a user",
                 "produces": [
                     "application/json"
@@ -830,6 +1050,13 @@ const docTemplate = `{
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -1148,8 +1375,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "Maybe Finance API",
-	Description:      "Maybe Finance API",
+	Title:            "Haven Finance API",
+	Description:      "Haven Finance API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

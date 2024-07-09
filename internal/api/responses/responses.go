@@ -1,5 +1,7 @@
 package responses
 
+import "github.com/christo-andrew/haven/internal/models"
+
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
@@ -8,6 +10,13 @@ type CreateUserResponse struct {
 	ID    uint   `json:"id"`
 	Email string `json:"email"`
 	Name  string `json:"name"`
+}
+
+func (createUserResponse CreateUserResponse) FromUser(user *models.User) CreateUserResponse {
+	createUserResponse.ID = user.ID
+	createUserResponse.Email = user.Email
+	createUserResponse.Name = user.GetFullName()
+	return createUserResponse
 }
 
 type UserResponse struct {

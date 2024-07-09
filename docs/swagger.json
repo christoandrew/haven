@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Maybe Finance API",
-        "title": "Maybe Finance API",
+        "description": "Haven Finance API",
+        "title": "Haven Finance API",
         "contact": {
             "name": "API Support",
             "url": "http://www.swagger.io/support",
@@ -19,6 +19,11 @@
     "paths": {
         "/accounts": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all accounts",
                 "produces": [
                     "application/json"
@@ -37,6 +42,13 @@
                         "description": "Group by account type",
                         "name": "group_by_account_type",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -54,6 +66,11 @@
         },
         "/accounts/create": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Create an account",
                 "consumes": [
                     "application/json"
@@ -94,6 +111,11 @@
         },
         "/accounts/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve an account",
                 "produces": [
                     "application/json"
@@ -123,6 +145,11 @@
         },
         "/accounts/{id}/transactions": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve an account's transactions",
                 "produces": [
                     "application/json"
@@ -161,6 +188,11 @@
         },
         "/accounts/{id}/transactions/recent": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Get 5 recent transactions for an account",
                 "consumes": [
                     "application/json"
@@ -178,6 +210,13 @@
                         "description": "Account ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -202,6 +241,11 @@
         },
         "/accounts/{id}/transactions/upload": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Upload account transactions",
                 "consumes": [
                     "multipart/form-data"
@@ -233,6 +277,13 @@
                         "description": "Transaction Schema",
                         "name": "transaction_schema",
                         "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -291,6 +342,11 @@
         },
         "/categories": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all categories",
                 "produces": [
                     "application/json"
@@ -299,6 +355,15 @@
                     "categories"
                 ],
                 "summary": "Get all categories",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -314,6 +379,11 @@
         },
         "/categories/create": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Create a category",
                 "consumes": [
                     "application/json"
@@ -334,6 +404,13 @@
                         "schema": {
                             "$ref": "#/definitions/requests.CreateCategoryRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -354,6 +431,11 @@
         },
         "/categories/types": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all category types",
                 "produces": [
                     "application/json"
@@ -374,6 +456,13 @@
                         "description": "Context Type",
                         "name": "context_type",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -391,6 +480,11 @@
         },
         "/categories/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve a category",
                 "produces": [
                     "application/json"
@@ -405,6 +499,13 @@
                         "description": "Category ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -438,6 +539,11 @@
         },
         "/data/{account_id}/transactions/histogram": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Get transaction histogram data",
                 "produces": [
                     "application/json"
@@ -453,6 +559,13 @@
                         "description": "Account ID",
                         "name": "account_id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -471,6 +584,11 @@
         },
         "/data/{account_id}/transactions/summary": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Get transactions summary data",
                 "produces": [
                     "application/json"
@@ -544,6 +662,13 @@
                         "name": "account_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -561,6 +686,11 @@
         },
         "/transactions": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all transactions",
                 "produces": [
                     "application/json"
@@ -569,6 +699,15 @@
                     "transactions"
                 ],
                 "summary": "Get all transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -584,6 +723,11 @@
         },
         "/transactions/create": {
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Create a transaction",
                 "consumes": [
                     "application/json"
@@ -604,6 +748,13 @@
                         "schema": {
                             "$ref": "#/definitions/requests.CreateTransactionRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -624,6 +775,11 @@
         },
         "/transactions/schemas": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve transaction schemas",
                 "produces": [
                     "application/json"
@@ -632,6 +788,15 @@
                     "transactions"
                 ],
                 "summary": "Get transaction schemas",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -647,6 +812,11 @@
         },
         "/transactions/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve a transaction",
                 "produces": [
                     "application/json"
@@ -662,6 +832,13 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -676,6 +853,11 @@
         },
         "/transactions/{id}/tags": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all tags for a transaction",
                 "produces": [
                     "application/json"
@@ -690,6 +872,13 @@
                         "description": "Transaction ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -706,6 +895,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Add a tag to a transaction",
                 "consumes": [
                     "application/json"
@@ -733,6 +927,13 @@
                         "schema": {
                             "$ref": "#/definitions/requests.CreateTagRequest"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -753,6 +954,11 @@
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve all users",
                 "produces": [
                     "application/json"
@@ -761,6 +967,15 @@
                     "users"
                 ],
                 "summary": "Get all users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -810,6 +1025,11 @@
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthToken": []
+                    }
+                ],
                 "description": "Retrieve a user",
                 "produces": [
                     "application/json"
@@ -824,6 +1044,13 @@
                         "description": "User ID",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],

@@ -56,7 +56,7 @@ func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
 
 	s.app.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "Welcome to the Cash Conquest API",
+			"message": "Welcome to the Haven API",
 		})
 	})
 
@@ -66,7 +66,7 @@ func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
 		fmt.Println(ctx.Request.URL.Query())
 
 		ctx.JSON(200, gin.H{
-			"message": "Welcome to the Cash Conquest API",
+			"message": "Welcome to the Haven API",
 		})
 	})
 

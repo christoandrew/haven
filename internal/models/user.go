@@ -13,13 +13,13 @@ type User struct {
 	Password  string `json:"password" gorm:"type:varchar(256)"`
 }
 
-func (user *User) GenerateTokenWithClaims() (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+func (user *User) GenerateToken() (string, error) {
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": user.Email,
 		"id":    user.ID,
 	})
 
-	return token.SignedString([]byte("secret"))
+	return claims.SignedString([]byte("secret"))
 }
 
 func (user *User) GetFullName() string {

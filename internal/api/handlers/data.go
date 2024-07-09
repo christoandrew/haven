@@ -24,8 +24,6 @@ type transactionsByCategory struct {
 	Amount float64 `json:"amount"`
 }
 
-type transactionSummaryData map[string]interface{}
-
 // TransactionsHistogramHandler TransactionHistogramData godoc
 // @Summary Get transaction histogram data
 // @Description Get transaction histogram data
@@ -35,6 +33,8 @@ type transactionSummaryData map[string]interface{}
 // @Success 200 {array} any
 // @Router /data/{account_id}/transactions/histogram [get]
 // @Tags data
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func TransactionsHistogramHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("account_id"))
 	c.JSON(200, buildTransactionsHistogramData(accountId, db))
@@ -131,6 +131,8 @@ func groupByYearAndMonth(transactions []transactionsByYearAndMonth) map[string]m
 // @Produce json
 // @Success 200 {array} transactionSummaryData
 // @Router /data/{account_id}/transactions/summary [get]
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func TransactionsSummaryHandler(c *gin.Context, db *gorm.DB) {
 	filter := c.Query("filter")
 	switch filter {

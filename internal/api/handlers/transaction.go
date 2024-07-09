@@ -1,18 +1,17 @@
 package handlers
 
 import (
-	"github.com/christo-andrew/haven/internal/api/responses"
-	"gopkg.in/yaml.v3"
-	"net/http"
-	"os"
-	"strconv"
-
 	"github.com/christo-andrew/haven/internal/api/requests"
+	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/api/serializers"
 	"github.com/christo-andrew/haven/internal/models"
 	"github.com/christo-andrew/haven/pkg/database/scopes"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
+	"net/http"
+	"os"
+	"strconv"
 )
 
 // GetAllTransactionsHandler GetAllTransactions godoc
@@ -22,6 +21,8 @@ import (
 // @Success 200 {array} responses.TransactionResponse
 // @Router /transactions [get]
 // @Tags transactions
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetAllTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	serializer := serializers.NewTransactionSerializer(getAllTransactions(db), true)
 	c.JSON(http.StatusOK, serializer.Serialize())
@@ -41,6 +42,8 @@ func getAllTransactions(db *gorm.DB) []models.Transaction {
 // @Success 200 {object} responses.TransactionResponse
 // @Router /transactions/{id} [get]
 // @Tags transactions
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetTransactionHandler(c *gin.Context, db *gorm.DB) {
 	transactionId, _ := strconv.Atoi(c.Param("id"))
 	response := serializers.NewTransactionSerializer(getTransaction(transactionId, db), false).Serialize()
@@ -53,22 +56,6 @@ func getTransaction(transactionID int, db *gorm.DB) models.Transaction {
 	return transaction
 }
 
-func GetTransactionsByDateRangeHandler(from time.Time, to time.Time) {
-	from, err := strconv.ParseInt(c.Param("from"), 10, 64)
-	to, err := strconv.ParseInt(c.Param("to"), 10, 64)
-
-	from = time.Unix(from)
-	to = time.Unix(to)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": error.Error()})
-	}
-
-	var transactions []*models.Transaction
-	scopes.GetTransactionsByDateRangeAndAccountId(from)
-
-}
-
 // CreateAccountTransactionHandler CreateTransaction godoc
 // @Summary Create a transaction
 // @Description Create a transaction
@@ -79,6 +66,8 @@ func GetTransactionsByDateRangeHandler(from time.Time, to time.Time) {
 // @Failure 400 {object} responses.ErrorResponse
 // @Router /transactions/create [post]
 // @Tags transactions
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func CreateAccountTransactionHandler(c *gin.Context, db *gorm.DB) {
 	batchCreate := c.Query("batch_create")
 	if batchCreate == "true" {
@@ -111,6 +100,8 @@ func CreateAccountTransactionHandler(c *gin.Context, db *gorm.DB) {
 // @Failure 400 {object} responses.ErrorResponse
 // @Router /transactions/{id}/tags [post]
 // @Tags transactions
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func AddTransactionTagHandler(c *gin.Context, db *gorm.DB) {
 	transactionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -141,6 +132,8 @@ func AddTransactionTagHandler(c *gin.Context, db *gorm.DB) {
 // @Success 200 {array} responses.TransactionSchema
 // @Router /transactions/schemas [get]
 // @Tags transactions
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetTransactionSchemasHandler(c *gin.Context) {
 	schemaFile := "internal/api/schemas/transaction.yml"
 	data, err := os.ReadFile(schemaFile)
@@ -167,6 +160,8 @@ func GetTransactionSchemasHandler(c *gin.Context) {
 // @Success 200 {array} responses.TagResponse
 // @Router /transactions/{id}/tags [get]
 // @Tags transactions
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetTransactionTagsHandler(c *gin.Context, db *gorm.DB) {
 	var transaction models.Transaction
 	transactionId, _ := strconv.Atoi(c.Param("id"))

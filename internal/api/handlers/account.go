@@ -25,6 +25,8 @@ import (
 // @Router /accounts [get]
 // @Param group_by_account_type query boolean false "Group by account type" Enums(true, false)
 // @Tags accounts
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetAllAccountsHandler(c *gin.Context, db *gorm.DB) {
 	groupByAccountType, _ := strconv.ParseBool(c.Query("group_by_account_type"))
 	accounts := getAccounts(groupByAccountType, db)
@@ -60,6 +62,7 @@ func getAccounts(groupByAccountType bool, db *gorm.DB) interface{} {
 // @Success 200 {object} responses.AccountResponse
 // @Router /accounts/{id} [get]
 // @Tags accounts
+// @Security AuthToken
 func GetAccountHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("id"))
 	account := getAccount(accountId, db)
@@ -87,6 +90,7 @@ func getAccount(accountID int, db *gorm.DB) models.Account {
 // @Success 200 {array} responses.TransactionResponse
 // @Router /accounts/{id}/transactions [get]
 // @Tags accounts
+// @Security AuthToken
 func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("id"))
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
@@ -118,6 +122,7 @@ func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 // @Failure 400 {object} responses.ErrorResponse
 // @Router /accounts/create [post]
 // @Tags accounts
+// @Security AuthToken
 func CreateAccountHandler(c *gin.Context, db *gorm.DB) {
 	var genericCreateAccountRequest requests.GenericCreateAccountRequest
 	err := c.ShouldBindJSON(&genericCreateAccountRequest)
@@ -154,6 +159,8 @@ func createAccount(account models.IAccount, db *gorm.DB) (models.IAccount, error
 // @Router /accounts/{id}/transactions/recent [get]
 // @Failure 400 {object} responses.ErrorResponse
 // @Tags accounts
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetRecentTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("id"))
 	var transactions []models.Transaction
@@ -175,6 +182,8 @@ func GetRecentTransactionsHandler(c *gin.Context, db *gorm.DB) {
 // @Failure 400 {object} responses.ErrorResponse
 // @Consumes multipart/form-data
 // @Tags accounts
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func UploadAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("id"))
 	transactionSchemaType := c.PostForm("transaction_schema")
