@@ -1,4 +1,4 @@
-```markdown
+
 # Haven Project
 
 Haven is a comprehensive financial management system designed to provide users with detailed insights into their transactions, accounts, and financial health through a variety of data visualizations and summaries.
