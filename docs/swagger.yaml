@@ -1,8 +1,5 @@
 basePath: /api/v1
 definitions:
-  handlers.transactionSummaryData:
-    additionalProperties: true
-    type: object
   requests.CreateBankAccountRequest:
     properties:
       account_name:
@@ -268,6 +265,31 @@ paths:
         in: query
         name: page
         type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Sort by
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort order
+        in: query
+        name: sort_order
+        type: string
+      - description: From date
+        in: query
+        name: from
+        type: string
+      - description: To date
+        in: query
+        name: to
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -626,7 +648,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/handlers.transactionSummaryData'
+              type: object
             type: array
       security:
       - AuthToken: []
