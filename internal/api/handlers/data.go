@@ -129,7 +129,7 @@ func groupByYearAndMonth(transactions []transactionsByYearAndMonth) map[string]m
 // @Param account_id path int true "Account ID"
 // @Tags data
 // @Produce json
-// @Success 200 {array} transactionSummaryData
+// @Success 200 {array} any
 // @Router /data/{account_id}/transactions/summary [get]
 // @Security AuthToken
 // @Param Authorization header string true "Authorization"
