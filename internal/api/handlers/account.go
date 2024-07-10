@@ -91,6 +91,7 @@ func getAccount(accountID int, db *gorm.DB) models.Account {
 // @Router /accounts/{id}/transactions [get]
 // @Tags accounts
 // @Security AuthToken
+// @Param Authorization header string true "Authorization"
 func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("id"))
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
