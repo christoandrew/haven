@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/christo-andrew/haven/internal/models"
@@ -59,8 +60,10 @@ func (c *CreateTransactionRequest) GetDateFormat() string {
 }
 
 func (c *CreateTransactionRequest) FormatDate() time.Time {
-	date, err := time.Parse(c.GetDateFormat(), c.Date)
+	date, err := time.Parse(time.DateOnly, c.Date)
 	if err != nil {
+		fmt.Printf("Error parsing date %s", date)
+		fmt.Println(err)
 		return time.Now()
 	}
 

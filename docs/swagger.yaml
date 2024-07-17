@@ -15,6 +15,30 @@ definitions:
       user_id:
         type: integer
     type: object
+  requests.CreateBudgetRequest:
+    properties:
+      amount:
+        type: number
+      category_id:
+        type: integer
+      description:
+        type: string
+      end_date:
+        type: string
+      name:
+        type: string
+      start_date:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - amount
+    - category_id
+    - end_date
+    - name
+    - start_date
+    - user_id
+    type: object
   requests.CreateCategoryRequest:
     properties:
       context:
@@ -89,6 +113,34 @@ definitions:
       name:
         type: string
     type: object
+  responses.AccountStatisticsResponse:
+    properties:
+      total_balance:
+        type: number
+      total_expense:
+        type: number
+      total_income:
+        type: number
+      transactions:
+        $ref: '#/definitions/responses.TransactionStatistics'
+    type: object
+  responses.BudgetResponse:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      start_date:
+        type: string
+    type: object
   responses.CategoryResponse:
     properties:
       context:
@@ -118,6 +170,15 @@ definitions:
     properties:
       token:
         type: string
+    type: object
+  responses.PercentageOfTotalAmountByTransactionResponse:
+    properties:
+      amount:
+        type: number
+      category:
+        type: string
+      percentage:
+        type: number
     type: object
   responses.TagResponse:
     properties:
@@ -179,6 +240,11 @@ definitions:
       name:
         type: string
     type: object
+  responses.TransactionStatistics:
+    properties:
+      this_week_vs_last_week:
+        $ref: '#/definitions/responses.WeekComparison'
+    type: object
   responses.UserResponse:
     properties:
       email:
@@ -187,6 +253,17 @@ definitions:
         type: integer
       name:
         type: string
+    type: object
+  responses.WeekComparison:
+    properties:
+      change:
+        type: number
+      last_week:
+        type: number
+      percentage_change:
+        type: number
+      this_week:
+        type: number
     type: object
 host: localhost:8080
 info:
@@ -252,6 +329,38 @@ paths:
       summary: Get an account
       tags:
       - accounts
+  /accounts/{id}/statistics:
+    get:
+      consumes:
+      - application/json
+      description: Get account statistics
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.AccountStatisticsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      security:
+      - AuthToken: []
+      summary: Get account statistics
+      tags:
+      - accounts
   /accounts/{id}/transactions:
     get:
       description: Retrieve an account's transactions
@@ -269,22 +378,20 @@ paths:
         in: query
         name: limit
         type: integer
-      - description: Sort by
-        in: query
-        name: sort_by
-        type: string
-      - description: Sort order
-        in: query
-        name: sort_order
-        type: string
-      - description: From date
+      - description: From
+        format: YYYY-MM-DD
         in: query
         name: from
         type: string
-      - description: To date
+      - description: To
+        format: YYYY-MM-DD
         in: query
         name: to
         type: string
+      - description: Unix Time
+        in: query
+        name: unixTime
+        type: boolean
       - description: Authorization
         in: header
         name: Authorization
@@ -302,6 +409,44 @@ paths:
       security:
       - AuthToken: []
       summary: Get an account's transactions
+      tags:
+      - accounts
+  /accounts/{id}/transactions/percentage:
+    get:
+      description: Retrieve percentage of total amount by transaction category
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Filter
+        enum:
+        - category
+        in: query
+        name: filter
+        type: string
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.PercentageOfTotalAmountByTransactionResponse'
+            type: array
+      security:
+      - AuthToken: []
+      summary: Get percentage of total amount by transaction category
       tags:
       - accounts
   /accounts/{id}/transactions/recent:
@@ -432,6 +577,84 @@ paths:
       summary: Login a user
       tags:
       - auth
+  /budgets:
+    get:
+      description: Retrieve all budgets
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.BudgetResponse'
+            type: array
+      security:
+      - AuthToken: []
+      summary: Get all budgets
+      tags:
+      - budgets
+  /budgets/{id}:
+    get:
+      description: Retrieve a budget
+      parameters:
+      - description: Budget ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.BudgetResponse'
+      security:
+      - AuthToken: []
+      summary: Get a budget
+      tags:
+      - budgets
+  /budgets/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a budget
+      parameters:
+      - description: Budget
+        in: body
+        name: budget
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateBudgetRequest'
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.BudgetResponse'
+      security:
+      - AuthToken: []
+      summary: Create a budget
+      tags:
+      - budgets
   /categories:
     get:
       description: Retrieve all categories

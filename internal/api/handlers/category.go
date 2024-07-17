@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -137,10 +136,8 @@ func createCategory(createCategoryRequest requests.CreateCategoryRequest, db *go
 func GetCategoryByContextAndContextTypeHandler(c *gin.Context, db *gorm.DB) {
 	context := c.Query("context")
 	contextType := c.Query("context_type")
-	fmt.Println(context, contextType)
 	var categories []models.Category
 	scopes.GetCategoriesByContextAndContextType(context, contextType, db).Find(&categories)
-	fmt.Println(categories)
 	serializer := serializers.NewCategorySerializer(categories, true)
 	response, err := serializer.Serialize()
 	if err != nil {

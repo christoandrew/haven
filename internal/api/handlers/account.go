@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"github.com/christo-andrew/haven/internal/api/responses"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/christo-andrew/haven/internal/api/requests"
 	"github.com/christo-andrew/haven/internal/api/schemas"
@@ -87,6 +89,10 @@ func getAccount(accountID int, db *gorm.DB) models.Account {
 // @Produce json
 // @Param id path string true "Account ID"
 // @Param page query int false "Page number"
+// @Param limit query int false "Limit"
+// @Param from query string false "From" Format(YYYY-MM-DD)
+// @Param to query string false "To" Format(YYYY-MM-DD)
+// @Param unixTime query boolean false "Unix Time"
 // @Success 200 {array} responses.TransactionResponse
 // @Router /accounts/{id}/transactions [get]
 // @Tags accounts
@@ -95,12 +101,28 @@ func getAccount(accountID int, db *gorm.DB) models.Account {
 func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	accountId, _ := strconv.Atoi(c.Param("id"))
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	transactions := scopes.GetTransactionsByAccountId(accountId, db)
-	paginator := pagination.Pagination{Page: page, Limit: 20}
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
+	from := c.Query("from")
+	to := c.Query("to")
+	unixTime, _ := strconv.ParseBool(c.Query("unixTime"))
+	paginator := pagination.Pagination{Page: page, Limit: limit}
 	var results []models.Transaction
+	var transactions *gorm.DB
+
+	if from != "" && to != "" {
+		var fromDate time.Time
+		var toDate time.Time
+		if unixTime {
+			fromDate = utils.ConvertToUnixTime(from)
+			toDate = utils.ConvertToUnixTime(to)
+		}
+		transactions = scopes.GetTransactionsByDateRangeAndAccountId(fromDate, toDate, accountId, db)
+	} else {
+		transactions = scopes.GetTransactionsByAccountId(accountId, db)
+	}
+
 	paginator.Paginate(transactions, models.Transaction{}).Find(&results)
 	serializer := serializers.NewTransactionSerializer(results, true)
-
 	response := pagination.Response{
 		Results:    serializer.Serialize(),
 		NextPage:   paginator.NextPage(),
@@ -111,6 +133,26 @@ func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 		LastPage:   paginator.LastPage(),
 	}
 	c.JSON(http.StatusOK, response)
+}
+
+// PercentageOfTotalAmountByTransactionHandler PercentageOfTotalAmountByTransaction godoc
+// @Summary Get percentage of total amount by transaction category
+// @Description Retrieve percentage of total amount by transaction category
+// @Produce json
+// @Param id path string true "Account ID"
+// @Param limit query int false "Limit"
+// @Param filter query string false "Filter" Enums(category)
+// @Success 200 {array} responses.PercentageOfTotalAmountByTransactionResponse
+// @Router /accounts/{id}/transactions/percentage [get]
+// @Tags accounts
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
+func PercentageOfTotalAmountByTransactionHandler(c *gin.Context, db *gorm.DB) {
+	accountId, _ := strconv.Atoi(c.Param("id"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "5"))
+	filter := c.DefaultQuery("filter", "category")
+	result := getPercentageOfTotalAmountBy(accountId, limit, db, filter)
+	c.JSON(http.StatusOK, result)
 }
 
 // CreateAccountHandler CreateAccount godoc
@@ -168,6 +210,24 @@ func GetRecentTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	scopes.GetRecentTransactions(db, accountId, 4).Find(&transactions)
 	response := serializers.NewTransactionSerializer(transactions, true).Serialize()
 	c.JSON(http.StatusOK, response)
+}
+
+// AccountStatisticsHandler Get Account Statistics godoc
+// @Summary Get account statistics
+// @Description Get account statistics
+// @Accept json
+// @Produce json
+// @Param id path int true "Account ID"
+// @Success 200 {object} responses.AccountStatisticsResponse
+// @Router /accounts/{id}/statistics [get]
+// @Failure 400 {object} responses.ErrorResponse
+// @Tags accounts
+// @Security AuthToken
+// @Param Authorization header string true "Authorization"
+func AccountStatisticsHandler(c *gin.Context, db *gorm.DB) {
+	accountId, _ := strconv.Atoi(c.Param("id"))
+	statistics := getStatistics(accountId, db)
+	c.JSON(http.StatusOK, statistics)
 }
 
 // UploadAccountTransactionsHandler Post Upload Account Transactions godoc
@@ -229,4 +289,29 @@ func parseTransactionsFile(file multipart.File, transactionSchema schemas.ITrans
 	}
 
 	return transactions
+}
+
+func getPercentageOfTotalAmountBy(accountId int, limit int, db *gorm.DB, filter string) interface{} {
+	var result []*responses.PercentageOfTotalAmountByTransactionResponse
+	switch filter {
+	case "category":
+		scopes.PercentageOfTotalAmountByTransactionCategory(accountId, limit, db).Scan(&result)
+		return result
+	}
+	return nil
+}
+
+type TotalTransactionLastWeekVsThisWeek struct {
+	LastWeekTotal    float64 `json:"last_week"`
+	ThisWeek         float64 `json:"this_week"`
+	PercentageChange float64 `json:"percentage_change"`
+}
+
+func getStatistics(accountId int, db *gorm.DB) interface{} {
+	response := responses.AccountStatisticsResponse{}
+	var weekComparison responses.WeekComparison
+	scopes.TransactionsTotalThisWeekVsLastWeek(accountId, db).Scan(&weekComparison)
+	weekComparison.CalculateChange()
+	response.Transactions.ThisWeekVsLastWeek = weekComparison
+	return response
 }
