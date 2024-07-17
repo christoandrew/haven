@@ -16,6 +16,10 @@ func AccountsRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 		handlers.GetAccountHandler(ctx, db)
 	})
 
+	router.GET("/:id/statistics", func(ctx *gin.Context) {
+		handlers.AccountStatisticsHandler(ctx, db)
+	})
+
 	router.GET("/:id/transactions", func(ctx *gin.Context) {
 		handlers.GetAccountTransactionsHandler(ctx, db)
 	})
@@ -34,6 +38,10 @@ func AccountsRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 
 	router.POST("/:id/transactions/upload", func(ctx *gin.Context) {
 		handlers.UploadAccountTransactionsHandler(ctx, db)
+	})
+
+	router.GET("/:id/transactions/percentage", func(ctx *gin.Context) {
+		handlers.PercentageOfTotalAmountByTransactionHandler(ctx, db)
 	})
 }
 
@@ -112,4 +120,30 @@ func DataRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 	router.GET("/:account_id/transactions/summary", func(ctx *gin.Context) {
 		handlers.TransactionsSummaryHandler(ctx, db)
 	})
+}
+
+func BudgetsRouterV1(router *gin.RouterGroup, db *gorm.DB) {
+	router.POST("/create", func(ctx *gin.Context) {
+		handlers.CreateBudgetHandler(ctx, db)
+	})
+
+	router.GET("", func(ctx *gin.Context) {
+		handlers.GetAllBudgetsHandler(ctx, db)
+	})
+
+	//router.GET("/:id", func(ctx *gin.Context) {
+	//	handlers.GetBudgetHandler(ctx, db)
+	//})
+	//
+	//router.GET("/:id/transactions", func(ctx *gin.Context) {
+	//	handlers.GetBudgetTransactionsHandler(ctx, db)
+	//})
+	//
+	//router.POST("/:id/transactions/create", func(ctx *gin.Context) {
+	//	handlers.CreateBudgetTransactionHandler(ctx, db)
+	//})
+	//
+	//router.GET("/:id/transactions/recent", func(ctx *gin.Context) {
+	//	handlers.GetRecentBudgetTransactionsHandler(ctx, db)
+	//})
 }

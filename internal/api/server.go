@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"github.com/christo-andrew/haven/internal/api/middleware"
 	"github.com/gin-contrib/cors"
 
@@ -37,6 +36,7 @@ func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
 		"origin",
 		"Cache-Control",
 		"X-Requested-With",
+		"Access-Control-Allow-Origin",
 	}
 
 	s.app.Use(cors.New(cors.Config{
@@ -62,9 +62,6 @@ func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
 
 	s.app.GET("/provider/auth", func(ctx *gin.Context) {
 		// Redirect to the provider's auth page
-		// Print all query params
-		fmt.Println(ctx.Request.URL.Query())
-
 		ctx.JSON(200, gin.H{
 			"message": "Welcome to the Haven API",
 		})
@@ -76,6 +73,7 @@ func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
 	routes.TransactionsRouterV1(v1.Group("/transactions", middleware.AuthMiddleware()), db)
 	routes.CategoriesRouterV1(v1.Group("/categories", middleware.AuthMiddleware()), db)
 	routes.DataRouterV1(v1.Group("/data", middleware.AuthMiddleware()), db)
+	routes.BudgetsRouterV1(v1.Group("/budgets", middleware.AuthMiddleware()), db)
 
 	return s.app
 }

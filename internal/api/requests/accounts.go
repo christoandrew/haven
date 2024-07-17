@@ -27,6 +27,30 @@ type CreateRealEstateAccountRequest struct {
 	*GenericCreateAccountRequest
 }
 
+type CreateLoanAccountRequest struct {
+	*GenericCreateAccountRequest
+}
+
+type CreateInvestmentAccountRequest struct {
+	*GenericCreateAccountRequest
+}
+
+type CreateAssetAccountRequest struct {
+	*GenericCreateAccountRequest
+}
+
+type CreateIncomeAccountRequest struct {
+	*GenericCreateAccountRequest
+}
+
+type CreateLiabilityAccountRequest struct {
+	*GenericCreateAccountRequest
+}
+
+type CreateExpensesAccountRequest struct {
+	*GenericCreateAccountRequest
+}
+
 // CreateAccountRequest defines the interface for creating different types of accounts
 type CreateAccountRequest interface {
 	Account() models.IAccount
@@ -43,6 +67,18 @@ func GetAccountRequest(genericReq *GenericCreateAccountRequest) (CreateAccountRe
 	case "credit_card":
 		return &CreateCreditCardAccountRequest{GenericCreateAccountRequest: genericReq}, nil
 	case "real_estate":
+		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
+	case "loan":
+		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
+	case "investment":
+		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
+	case "asset":
+		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
+	case "income":
+		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
+	case "liability":
+		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
+	case "expenses":
 		return &CreateRealEstateAccountRequest{GenericCreateAccountRequest: genericReq}, nil
 	}
 	return nil, errors.New("invalid account type")

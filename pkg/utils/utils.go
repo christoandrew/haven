@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"io"
 	"log"
+	"strconv"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -57,4 +59,13 @@ func ComparePassword(hashedPassword string, password string) bool {
 func GenerateMD5Hash(text string) string {
 	hash := md5.Sum([]byte(text))
 	return hex.EncodeToString(hash[:])
+}
+
+func CalculatePercentageChange(from float64, to float64) float64 {
+	return ((from - to) / to) * 100
+}
+
+func ConvertToUnixTime(timeStr string) time.Time {
+	t, _ := strconv.ParseInt(timeStr, 10, 64)
+	return time.Unix(t, 0)
 }

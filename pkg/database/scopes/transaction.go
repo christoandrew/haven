@@ -1,6 +1,9 @@
 package scopes
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 func AccountTransactionsByYearAndMonth(accountId int, year int, db *gorm.DB) *gorm.DB {
 	query := `SELECT
@@ -38,7 +41,7 @@ func GetTransactionById(id int, db *gorm.DB) *gorm.DB {
 
 func GroupAccountTransactionsByTransactionCategory(accountId int, db *gorm.DB) *gorm.DB {
 	query := `SELECT
-				transaction_categories.name,
+				transaction_categories.name AS category,
 				SUM(transactions.amount) AS amount
 			  FROM transactions
 			  INNER JOIN categories AS transaction_types ON transactions.transaction_type_id = transaction_types.id
@@ -47,6 +50,22 @@ func GroupAccountTransactionsByTransactionCategory(accountId int, db *gorm.DB) *
 			  GROUP BY transaction_categories.name;`
 
 	return db.Raw(query, accountId)
+}
+
+func PercentageOfTotalAmountByTransactionCategory(accountId int, limit int, db *gorm.DB) *gorm.DB {
+	query := `SELECT
+    transaction_categories.name AS category,
+    	SUM(ROUND(transactions.amount)) AS amount,
+    	ROUND(SUM(transactions.amount) / (SELECT SUM(amount) FROM transactions WHERE account_id = ?) * 100, 2) AS percentage
+	FROM transactions
+			 INNER JOIN categories AS transaction_types ON transactions.transaction_type_id = transaction_types.id
+			 INNER JOIN categories AS transaction_categories ON transactions.category_id = transaction_categories.id
+	WHERE transactions.account_id = ?
+	GROUP BY transaction_categories.name
+	ORDER BY percentage DESC
+	LIMIT ?;`
+
+	return db.Raw(query, accountId, accountId, limit)
 }
 
 func GetTransactionByIdWithTags(transactionId int, db *gorm.DB) *gorm.DB {
@@ -73,7 +92,7 @@ func GetTransactionsByDateRange(startDate string, endDate string, db *gorm.DB) *
 	return db.Scopes(GetAllTransactions).Where("date BETWEEN ? AND ?", startDate, endDate)
 }
 
-func GetTransactionsByDateRangeAndAccountId(startDate string, endDate string, accountId int, db *gorm.DB) *gorm.DB {
+func GetTransactionsByDateRangeAndAccountId(startDate time.Time, endDate time.Time, accountId int, db *gorm.DB) *gorm.DB {
 	return GetTransactionsByAccountId(accountId, db).Where("date BETWEEN ? AND ?", startDate, endDate)
 }
 
@@ -85,6 +104,6 @@ func GetTransactionsByDateRangeAndTransactionTypeId(startDate string, endDate st
 	return GetTransactionsByTransactionTypeId(transactionTypeId, db).Where("date BETWEEN ? AND ?", startDate, endDate)
 }
 
-func GetTransactionsByDateRangeAndAccountIdAndCategoryId(startDate string, endDate string, accountId int, categoryId int, db *gorm.DB) *gorm.DB {
+func GetTransactionsByDateRangeAndAccountIdAndCategoryId(startDate time.Time, endDate time.Time, accountId int, categoryId int, db *gorm.DB) *gorm.DB {
 	return GetTransactionsByDateRangeAndAccountId(startDate, endDate, accountId, db).Where("category_id = ?", categoryId)
 }
