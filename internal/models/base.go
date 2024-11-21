@@ -1,7 +1,6 @@
 package models
 
 import (
-	database "github.com/christo-andrew/haven/pkg/database"
 	"gorm.io/gorm"
 )
 
@@ -21,8 +20,4 @@ func Migrate(db *gorm.DB) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func DB() *gorm.DB {
-	return database.GetDB(database.DatabaseConfig{})
 }

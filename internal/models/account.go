@@ -19,9 +19,3 @@ type Account struct {
 	BaseAccountID   int           `json:"base_account_id"`
 	Transactions    []Transaction `gorm:"foreignKey:AccountID"`
 }
-
-func (a *Account) BaseAccount() IAccount {
-	var account IAccount
-	DB().Table(a.BaseAccountType).First(&account, a.BaseAccountID)
-	return account
-}

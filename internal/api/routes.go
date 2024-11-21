@@ -1,4 +1,4 @@
-package routes
+package api
 
 import (
 	"github.com/christo-andrew/haven/internal/api/handlers"
@@ -130,20 +130,4 @@ func BudgetsRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 	router.GET("", func(ctx *gin.Context) {
 		handlers.GetAllBudgetsHandler(ctx, db)
 	})
-
-	//router.GET("/:id", func(ctx *gin.Context) {
-	//	handlers.GetBudgetHandler(ctx, db)
-	//})
-	//
-	//router.GET("/:id/transactions", func(ctx *gin.Context) {
-	//	handlers.GetBudgetTransactionsHandler(ctx, db)
-	//})
-	//
-	//router.POST("/:id/transactions/create", func(ctx *gin.Context) {
-	//	handlers.CreateBudgetTransactionHandler(ctx, db)
-	//})
-	//
-	//router.GET("/:id/transactions/recent", func(ctx *gin.Context) {
-	//	handlers.GetRecentBudgetTransactionsHandler(ctx, db)
-	//})
 }

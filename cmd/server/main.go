@@ -1,13 +1,11 @@
 package server
 
 import (
+	"github.com/christo-andrew/haven/pkg"
 	"log"
 
 	"github.com/christo-andrew/haven/internal/api"
 	"github.com/christo-andrew/haven/internal/models"
-	"github.com/christo-andrew/haven/pkg/config"
-	database "github.com/christo-andrew/haven/pkg/database"
-	"github.com/joho/godotenv"
 )
 
 //	@title			Haven API
@@ -24,13 +22,19 @@ import (
 //	@BasePath	/api/v1
 
 func StartApp() {
-	serverConfig := config.DefaultServerConfig()
-	err := godotenv.Load(serverConfig.EnvPath)
+	currentConfig, err := pkg.New(".env")
+	if err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
+	currentConfig.Validate()
+	app := api.NewServer(currentConfig)
+	db, err := currentConfig.Database.GetDB()
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	db := database.GetDB(serverConfig.DatabaseConfig)
-	app := api.NewServer(serverConfig)
+
 	server := app.SetupRouter(db)
 	models.Migrate(db)
 	err = server.Run()

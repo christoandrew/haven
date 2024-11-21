@@ -1,13 +1,12 @@
 package handlers
 
 import (
+	"github.com/christo-andrew/haven/pkg"
 	"net/http"
 
 	"github.com/christo-andrew/haven/internal/api/requests"
 	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/models"
-	"github.com/christo-andrew/haven/pkg/errors"
-	utils "github.com/christo-andrew/haven/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -53,11 +52,11 @@ func getUserByCredentials(username string, password string, db *gorm.DB) (models
 	db.Where("username = ?", username).First(&user)
 
 	if user.ID == 0 {
-		return user, errors.UserNotFoundError()
+		return user, pkg.UserNotFoundError()
 	}
 
-	if !utils.ComparePassword(user.Password, password) {
-		return user, errors.InvalidCredentialsError()
+	if !pkg.ComparePassword(user.Password, password) {
+		return user, pkg.InvalidCredentialsError()
 	}
 
 	return user, nil
