@@ -6,11 +6,54 @@ import (
 	"encoding/hex"
 	"io"
 	"log"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+// Env Helper functions
+func GetEnvOrDefault(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists && value != "" {
+		return value
+	}
+	return defaultValue
+}
+
+func GetEnvAsIntOrDefault(key string, defaultValue int) int {
+	if value, exists := os.LookupEnv(key); exists && value != "" {
+		if intValue, err := strconv.Atoi(value); err == nil {
+			return intValue
+		}
+	}
+	return defaultValue
+}
+
+func GetEnvAsBoolOrDefault(key string, defaultValue bool) bool {
+	if value, exists := os.LookupEnv(key); exists && value != "" {
+		if boolValue, err := strconv.ParseBool(value); err != nil {
+			return boolValue
+		}
+	}
+
+	return defaultValue
+}
+
+func GetEnvAsSliceOrDefault(key string, defaultValue []string) []string {
+	if value, exists := os.LookupEnv(key); exists && value != "" {
+		return Split(value, ",")
+	}
+	return defaultValue
+}
+
+func Split(s string, sep string) []string {
+	if s == "" {
+		return []string{}
+	}
+	return strings.Split(s, sep)
+}
 
 func Map[T, U any](arr []T, f func(T) U) []U {
 	out := make([]U, len(arr))

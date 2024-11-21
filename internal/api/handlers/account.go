@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/christo-andrew/haven/internal/api/responses"
+	utils "github.com/christo-andrew/haven/pkg"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -13,8 +14,6 @@ import (
 	"github.com/christo-andrew/haven/internal/api/serializers"
 	"github.com/christo-andrew/haven/internal/models"
 	"github.com/christo-andrew/haven/pkg/database/scopes"
-	"github.com/christo-andrew/haven/pkg/pagination"
-	utils "github.com/christo-andrew/haven/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -105,7 +104,7 @@ func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	from := c.Query("from")
 	to := c.Query("to")
 	unixTime, _ := strconv.ParseBool(c.Query("unixTime"))
-	paginator := pagination.Pagination{Page: page, Limit: limit}
+	paginator := utils.Pagination{Page: page, Limit: limit}
 	var results []models.Transaction
 	var transactions *gorm.DB
 
@@ -123,7 +122,7 @@ func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 
 	paginator.Paginate(transactions, models.Transaction{}).Find(&results)
 	serializer := serializers.NewTransactionSerializer(results, true)
-	response := pagination.Response{
+	response := utils.Response{
 		Results:    serializer.Serialize(),
 		NextPage:   paginator.NextPage(),
 		PrevPage:   paginator.PrevPage(),
@@ -258,7 +257,7 @@ func UploadAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Account not found"})
 		return
 	}
-	transactionSchema := schemas.GetTransactionSchemaFromName(transactionSchemaType, &account)
+	transactionSchema := schemas.GetTransactionSchemaFromName(transactionSchemaType, &account, db)
 	if transactionSchema == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Transaction schema not found"})
 		return

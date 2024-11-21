@@ -3,7 +3,7 @@ package serializers
 import (
 	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/models"
-	"github.com/christo-andrew/haven/pkg/errors"
+	"github.com/christo-andrew/haven/pkg"
 )
 
 type AccountSerializer struct {
@@ -27,14 +27,14 @@ func (as AccountSerializer) Serialize() (interface{}, error) {
 	case models.Account:
 		return as.serializeSingle(as.Data)
 	default:
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 }
 
 func (as AccountSerializer) serializeMany(obj interface{}) (interface{}, error) {
 	accounts, ok := obj.([]models.Account)
 	if !ok {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 
 	var response []*responses.AccountResponse
@@ -50,11 +50,11 @@ func (as AccountSerializer) serializeMany(obj interface{}) (interface{}, error) 
 
 func (as AccountSerializer) serializeSingle(obj interface{}) (*responses.AccountResponse, error) {
 	if obj == nil {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 	account, ok := obj.(models.Account)
 	if !ok {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 
 	return &responses.AccountResponse{
@@ -69,12 +69,12 @@ func (as AccountSerializer) serializeSingle(obj interface{}) (*responses.Account
 
 func (as AccountSerializer) serializeGrouped() (interface{}, error) {
 	if as.Data == nil {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 
 	accounts, ok := as.Data.(map[string][]models.Account)
 	if !ok {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 
 	accountMap := make(map[string][]*responses.AccountResponse)

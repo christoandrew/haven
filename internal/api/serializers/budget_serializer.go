@@ -3,7 +3,7 @@ package serializers
 import (
 	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/models"
-	"github.com/christo-andrew/haven/pkg/errors"
+	"github.com/christo-andrew/haven/pkg"
 )
 
 type BudgetSerializer struct {
@@ -25,17 +25,17 @@ func (bs BudgetSerializer) Serialize() (interface{}, error) {
 	case models.Budget:
 		return bs.serializeSingle(bs.Data)
 	default:
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 }
 
 func (bs BudgetSerializer) serializeSingle(obj interface{}) (*responses.BudgetResponse, error) {
 	if obj == nil {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 	budget, ok := obj.(models.Budget)
 	if !ok {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 
 	return responses.BudgetResponse{}.FromBudget(budget), nil
@@ -44,7 +44,7 @@ func (bs BudgetSerializer) serializeSingle(obj interface{}) (*responses.BudgetRe
 func (bs BudgetSerializer) serializeMany(obj interface{}) (interface{}, error) {
 	budgets, ok := obj.([]models.Budget)
 	if !ok {
-		return nil, errors.InvalidDataError()
+		return nil, pkg.InvalidDataError()
 	}
 
 	var response []*responses.BudgetResponse

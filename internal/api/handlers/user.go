@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"errors"
+	utils "github.com/christo-andrew/haven/pkg"
 	"net/http"
 	"strconv"
 
 	"github.com/christo-andrew/haven/internal/api/requests"
 	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/models"
-	utils "github.com/christo-andrew/haven/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )

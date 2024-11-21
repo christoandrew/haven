@@ -14,10 +14,10 @@ type StanbicTransactionSchema struct {
 	Account *models.Account
 }
 
-func NewStanbicTransactionSchema(account *models.Account) *StanbicTransactionSchema {
+func NewStanbicTransactionSchema(account *models.Account, db *gorm.DB) *StanbicTransactionSchema {
 	return &StanbicTransactionSchema{
 		Account: account,
-		db:      models.DB(),
+		db:      db,
 	}
 }
 
