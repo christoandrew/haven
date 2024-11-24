@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"errors"
-	utils "github.com/christo-andrew/haven/pkg"
+	"github.com/christo-andrew/haven/pkg/utils"
 	"net/http"
 	"strconv"
 

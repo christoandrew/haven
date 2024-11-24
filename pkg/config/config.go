@@ -1,7 +1,9 @@
-package pkg
+package config
 
 import (
 	"fmt"
+	"github.com/christo-andrew/haven/pkg/logging"
+	"github.com/christo-andrew/haven/pkg/utils"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -65,27 +67,27 @@ func (serverConfig *ServerConfig) GetAddress() string {
 // DefaultServerConfig returns a ServerConfig with default values
 func getServerConfig() ServerConfig {
 	return ServerConfig{
-		Host:        GetEnvOrDefault("SERVER_HOST", "0.0.0.0"),
-		Port:        GetEnvAsIntOrDefault("SERVER_PORT", 8080),
-		Environment: GetEnvOrDefault("ENVIRONMENT", "development"),
-		LogLevel:    GetEnvOrDefault("LOG_LEVEL", "info"),
-		AllowedOrigins: GetEnvAsSliceOrDefault(
+		Host:        utils.GetEnvOrDefault("SERVER_HOST", "0.0.0.0"),
+		Port:        utils.GetEnvAsIntOrDefault("SERVER_PORT", 8080),
+		Environment: utils.GetEnvOrDefault("ENVIRONMENT", "development"),
+		LogLevel:    utils.GetEnvOrDefault("LOG_LEVEL", "info"),
+		AllowedOrigins: utils.GetEnvAsSliceOrDefault(
 			"ALLOWED_ORIGINS",
 			[]string{"http://localhost:3000"},
 		),
-		AllowedMethods: GetEnvAsSliceOrDefault(
+		AllowedMethods: utils.GetEnvAsSliceOrDefault(
 			"ALLOWED_METHODS",
 			[]string{"GET", "POST", "PUT", "DELETE"},
 		),
-		AllowedHeaders: GetEnvAsSliceOrDefault(
+		AllowedHeaders: utils.GetEnvAsSliceOrDefault(
 			"ALLOWED_HEADERS",
 			defaultAllowedHeaders(),
 		),
-		AllowCredentials: GetEnvAsBoolOrDefault(
+		AllowCredentials: utils.GetEnvAsBoolOrDefault(
 			"ALLOW_CREDENTIALS",
 			false,
 		),
-		ExposedHeaders: GetEnvAsSliceOrDefault(
+		ExposedHeaders: utils.GetEnvAsSliceOrDefault(
 			"EXPOSED_HEADERS",
 			defaultExposedHeaders(),
 		),
@@ -108,15 +110,15 @@ func New(envPath string) (*Config, error) {
 // DefaultDatabaseConfig returns default database configuration from environment variables
 func getDatabaseConfig() DatabaseConfig {
 	return DatabaseConfig{
-		Host:               GetEnvOrDefault("MYSQL_DATABASE_HOST", "localhost"),
-		Port:               GetEnvOrDefault("MYSQL_DATABASE_PORT", "3306"),
-		Username:           GetEnvOrDefault("MYSQL_USERNAME", "root"),
-		Password:           GetEnvOrDefault("MYSQL_PASSWORD", ""),
-		Database:           GetEnvOrDefault("MYSQL_DATABASE_NAME", "haven"),
-		SSLMode:            GetEnvOrDefault("MYSQL_SSL_MODE", "disable"),
-		MaxIdleConnections: GetEnvAsIntOrDefault("MYSQL_MAX_IDLE_CONNS", 10),
-		MaxOpenConnections: GetEnvAsIntOrDefault("MYSQL_MAX_OPEN_CONNS", 100),
-		MaxLifetime:        time.Duration(GetEnvAsIntOrDefault("MYSQL_CONN_MAX_LIFETIME", 3600)) * time.Second,
+		Host:               utils.GetEnvOrDefault("MYSQL_DATABASE_HOST", "localhost"),
+		Port:               utils.GetEnvOrDefault("MYSQL_DATABASE_PORT", "3306"),
+		Username:           utils.GetEnvOrDefault("MYSQL_USERNAME", "root"),
+		Password:           utils.GetEnvOrDefault("MYSQL_PASSWORD", ""),
+		Database:           utils.GetEnvOrDefault("MYSQL_DATABASE_NAME", "haven"),
+		SSLMode:            utils.GetEnvOrDefault("MYSQL_SSL_MODE", "disable"),
+		MaxIdleConnections: utils.GetEnvAsIntOrDefault("MYSQL_MAX_IDLE_CONNS", 10),
+		MaxOpenConnections: utils.GetEnvAsIntOrDefault("MYSQL_MAX_OPEN_CONNS", 100),
+		MaxLifetime:        time.Duration(utils.GetEnvAsIntOrDefault("MYSQL_CONN_MAX_LIFETIME", 3600)) * time.Second,
 	}
 }
 
@@ -142,7 +144,7 @@ func (databaseConfig DatabaseConfig) GetDSN() string {
 // GetDB initializes and returns a configured GORM DB instance
 func (databaseConfig DatabaseConfig) GetDB() (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(databaseConfig.ConnectionString()), &gorm.Config{
-		Logger: DatabaseQueryLogger(),
+		Logger: logging.DatabaseQueryLogger(),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
