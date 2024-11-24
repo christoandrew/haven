@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"github.com/christo-andrew/haven/internal/api/responses"
-	utils "github.com/christo-andrew/haven/pkg"
+	"github.com/christo-andrew/haven/pkg/pagination"
+	"github.com/christo-andrew/haven/pkg/utils"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -104,7 +105,7 @@ func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 	from := c.Query("from")
 	to := c.Query("to")
 	unixTime, _ := strconv.ParseBool(c.Query("unixTime"))
-	paginator := utils.Pagination{Page: page, Limit: limit}
+	paginator := pagination.Pagination{Page: page, Limit: limit}
 	var results []models.Transaction
 	var transactions *gorm.DB
 
@@ -122,7 +123,7 @@ func GetAccountTransactionsHandler(c *gin.Context, db *gorm.DB) {
 
 	paginator.Paginate(transactions, models.Transaction{}).Find(&results)
 	serializer := serializers.NewTransactionSerializer(results, true)
-	response := utils.Response{
+	response := pagination.Response{
 		Results:    serializer.Serialize(),
 		NextPage:   paginator.NextPage(),
 		PrevPage:   paginator.PrevPage(),

@@ -3,27 +3,25 @@ package api
 import (
 	"github.com/christo-andrew/haven/docs"
 	"github.com/christo-andrew/haven/internal/api/middleware"
-	"github.com/christo-andrew/haven/pkg"
+	"github.com/christo-andrew/haven/pkg/config"
 	"github.com/gin-contrib/cors"
-	"gorm.io/gorm"
-
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 type Server struct {
 	app    *gin.Engine
-	Config *pkg.ServerConfig
+	Config *config.ServerConfig
 }
 
-func NewServer(config *pkg.Config) *Server {
+func NewApiServer(config *config.Config) *Server {
 	app := gin.Default()
 	return &Server{app: app, Config: &config.Server}
 }
 
 func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
-
 	s.app.Use(cors.New(cors.Config{
 		AllowOrigins:     s.Config.AllowedOrigins,
 		AllowMethods:     s.Config.AllowedMethods,

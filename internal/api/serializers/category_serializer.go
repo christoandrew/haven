@@ -3,7 +3,7 @@ package serializers
 import (
 	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/models"
-	"github.com/christo-andrew/haven/pkg"
+	"github.com/christo-andrew/haven/pkg/errors"
 )
 
 type CategorySerializer struct {
@@ -18,7 +18,7 @@ func (cs CategorySerializer) Serialize() (interface{}, error) {
 	case models.Category:
 		return cs.serializeSingle(cs.Data)
 	default:
-		return nil, pkg.InvalidDataError()
+		return nil, errors.InvalidDataError()
 	}
 }
 
@@ -32,7 +32,7 @@ func NewCategorySerializer(data interface{}, many bool) CategorySerializer {
 func (cs CategorySerializer) serializeSingle(obj interface{}) (interface{}, error) {
 	category, ok := obj.(models.Category)
 	if !ok {
-		return nil, pkg.InvalidDataError()
+		return nil, errors.InvalidDataError()
 	}
 
 	return &responses.CategoryResponse{
@@ -48,7 +48,7 @@ func (cs CategorySerializer) serializeMany() (interface{}, error) {
 	var response []*responses.CategoryResponse
 	categories, ok := cs.Data.([]models.Category)
 	if !ok {
-		return nil, pkg.InvalidDataError()
+		return nil, errors.InvalidDataError()
 	}
 	for _, category := range categories {
 		response = append(response, &responses.CategoryResponse{

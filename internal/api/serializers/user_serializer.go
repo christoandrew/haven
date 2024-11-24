@@ -3,7 +3,7 @@ package serializers
 import (
 	"github.com/christo-andrew/haven/internal/api/responses"
 	"github.com/christo-andrew/haven/internal/models"
-	"github.com/christo-andrew/haven/pkg"
+	"github.com/christo-andrew/haven/pkg/errors"
 )
 
 type UserSerializer struct {
@@ -23,7 +23,7 @@ func (us UserSerializer) Serialize() (interface{}, error) {
 	case []models.User:
 		data, ok := us.Data.([]responses.CreateUserResponse)
 		if !ok {
-			return nil, pkg.InvalidDataError()
+			return nil, errors.InvalidDataError()
 		}
 		return data, nil
 	case models.User:
@@ -34,14 +34,14 @@ func (us UserSerializer) Serialize() (interface{}, error) {
 
 		return data, nil
 	default:
-		return nil, pkg.InvalidDataError()
+		return nil, errors.InvalidDataError()
 	}
 }
 
 func (us UserSerializer) serializeSingle(obj interface{}) (interface{}, error) {
 	user, ok := obj.(models.User)
 	if !ok {
-		return nil, pkg.InvalidDataError()
+		return nil, errors.InvalidDataError()
 	}
 
 	return &responses.CreateUserResponse{

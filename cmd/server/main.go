@@ -1,11 +1,11 @@
 package server
 
 import (
-	"github.com/christo-andrew/haven/pkg"
+	"github.com/christo-andrew/haven/pkg/config"
+	"github.com/christo-andrew/haven/pkg/database"
 	"log"
 
 	"github.com/christo-andrew/haven/internal/api"
-	"github.com/christo-andrew/haven/internal/models"
 )
 
 //	@title			Haven API
@@ -22,13 +22,13 @@ import (
 //	@BasePath	/api/v1
 
 func StartApp() {
-	currentConfig, err := pkg.New(".env")
+	currentConfig, err := config.New(".env")
 	if err != nil {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
 
 	currentConfig.Validate()
-	app := api.NewServer(currentConfig)
+	app := api.NewApiServer(currentConfig)
 	db, err := currentConfig.Database.GetDB()
 
 	if err != nil {
@@ -36,7 +36,7 @@ func StartApp() {
 	}
 
 	server := app.SetupRouter(db)
-	models.Migrate(db)
+	database.Migrate(db)
 	err = server.Run()
 	if err != nil {
 		panic(err)
