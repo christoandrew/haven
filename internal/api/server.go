@@ -4,7 +4,6 @@ import (
 	"github.com/christo-andrew/haven/docs"
 	"github.com/christo-andrew/haven/internal/api/middleware"
 	"github.com/christo-andrew/haven/pkg/config"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,13 +21,7 @@ func NewApiServer(config *config.Config) *Server {
 }
 
 func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
-	s.app.Use(cors.New(cors.Config{
-		AllowOrigins:     s.Config.AllowedOrigins,
-		AllowMethods:     s.Config.AllowedMethods,
-		AllowHeaders:     s.Config.AllowedHeaders,
-		ExposeHeaders:    s.Config.ExposedHeaders,
-		AllowCredentials: s.Config.AllowCredentials,
-	}))
+	s.app.Use(middleware.CorsMiddleware())
 
 	api := s.app.Group("/api")
 	v1 := api.Group("/v1")
@@ -52,11 +45,11 @@ func (s *Server) SetupRouter(db *gorm.DB) *gin.Engine {
 
 	UsersRouterV1(v1.Group("/users"), db)
 	AuthRouterV1(v1.Group("/auth"), db)
-	AccountsRouterV1(v1.Group("/accounts", middleware.AuthMiddleware()), db)
-	TransactionsRouterV1(v1.Group("/transactions", middleware.AuthMiddleware()), db)
-	CategoriesRouterV1(v1.Group("/categories", middleware.AuthMiddleware()), db)
-	DataRouterV1(v1.Group("/data", middleware.AuthMiddleware()), db)
-	BudgetsRouterV1(v1.Group("/budgets", middleware.AuthMiddleware()), db)
+	AccountsRouterV1(v1.Group("/accounts", middleware.WithAuthUser()), db)
+	TransactionsRouterV1(v1.Group("/transactions", middleware.WithAuthUser()), db)
+	CategoriesRouterV1(v1.Group("/categories", middleware.WithAuthUser()), db)
+	DataRouterV1(v1.Group("/data", middleware.WithAuthUser()), db)
+	BudgetsRouterV1(v1.Group("/budgets", middleware.WithAuthUser()), db)
 
 	return s.app
 }

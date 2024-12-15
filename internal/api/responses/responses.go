@@ -66,6 +66,12 @@ type TagResponse struct {
 	Name string `json:"name"`
 }
 
+func (tagResponse TagResponse) FromTag(tag models.Tag) TagResponse {
+	tagResponse.ID = tag.ID
+	tagResponse.Name = tag.Name
+	return tagResponse
+}
+
 type TransactionSchema struct {
 	Name       string `yaml:"name" json:"name"`
 	DateFormat string `yaml:"date_format" json:"date_format"`

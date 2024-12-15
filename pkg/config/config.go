@@ -26,6 +26,13 @@ type DatabaseConfig struct {
 	SSLMode            string
 }
 
+// RedisConfig holds Redis configuration
+type RedisConfig struct {
+	Host     string
+	Password string
+	DB       int
+}
+
 // ServerConfig holds all server-related configuration
 type ServerConfig struct {
 	Host             string
@@ -44,6 +51,7 @@ type ServerConfig struct {
 type Config struct {
 	Server   ServerConfig
 	Database DatabaseConfig
+	Redis    RedisConfig
 }
 
 func (config *Config) Validate() {

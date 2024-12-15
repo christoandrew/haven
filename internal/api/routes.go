@@ -94,7 +94,7 @@ func CategoriesRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 }
 
 func UsersRouterV1(router *gin.RouterGroup, db *gorm.DB) {
-	router.GET("/", middleware.AuthMiddleware(), func(ctx *gin.Context) {
+	router.GET("/", middleware.WithAuthUser(), func(ctx *gin.Context) {
 		handlers.GetAllUsersHandler(ctx, db)
 	})
 
@@ -102,7 +102,7 @@ func UsersRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 		handlers.CreateUserHandler(ctx, db)
 	})
 
-	router.GET("/:id", middleware.AuthMiddleware(), func(ctx *gin.Context) {
+	router.GET("/:id", middleware.WithAuthUser(), func(ctx *gin.Context) {
 		handlers.GetUserHandler(ctx, db)
 	})
 }
@@ -127,7 +127,19 @@ func BudgetsRouterV1(router *gin.RouterGroup, db *gorm.DB) {
 		handlers.CreateBudgetHandler(ctx, db)
 	})
 
-	router.GET("", func(ctx *gin.Context) {
-		handlers.GetAllBudgetsHandler(ctx, db)
+	router.GET("/:id", func(ctx *gin.Context) {
+		handlers.GetBudgetHandler(ctx, db)
 	})
+
+	router.PUT("/:id/update", func(ctx *gin.Context) {
+		handlers.UpdateBudgetHandler(ctx, db)
+	})
+
+	router.GET("", func(ctx *gin.Context) {
+		handlers.GetBudgetsHandler(ctx, db)
+	})
+
+	//router.POST(":id/tags", func(ctx *gin.Context) {
+	//	handlers.AddBudgetTagHandler(ctx, db)
+	//})
 }
