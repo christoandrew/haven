@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
+	"os"
 	"time"
 )
 
@@ -12,15 +13,16 @@ type IAccount interface {
 
 type Account struct {
 	gorm.Model
-	ID              int    `json:"id"`
-	AccountName     string `json:"name"`
-	AccountType     string `json:"account_type"`
-	Currency        string `json:"currency"`
-	UserID          uint   `json:"user_id"`
-	Balance         float64
+	ID              int           `json:"id"`
+	AccountName     string        `json:"name"`
+	AccountType     string        `json:"account_type"`
+	Currency        string        `json:"currency"`
+	UserID          uint          `json:"user_id"`
+	Balance         float64       `json:"balance"`
 	BaseAccountType string        `json:"base_account_type"`
 	BaseAccountID   int           `json:"base_account_id"`
 	Transactions    []Transaction `gorm:"foreignKey:AccountID"`
+	Tags            []Tag         `gorm:"many2many:account_tags;"`
 }
 
 type BankAccount struct {
@@ -36,16 +38,46 @@ type CreditCardAccount struct {
 // Budget
 type Budget struct {
 	gorm.Model
-	Id          uint      `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Amount      float64   `json:"amount"`
-	UserId      uint      `json:"user_id"`
-	User        User      `json:"user"`
-	Category    Category  `json:"category"`
-	StartDate   time.Time `json:"start_date"`
-	EndDate     time.Time `json:"end_date"`
-	CategoryID  uint      `json:"category_id"`
+	Id           uint          `json:"id"`
+	Name         string        `json:"name"`
+	Description  string        `json:"description"`
+	Amount       float64       `json:"amount"`
+	UserId       uint          `json:"user_id"`
+	User         User          `json:"user"`
+	Category     Category      `json:"category"`
+	Transactions []Transaction `gorm:"foreignKey:BudgetID"`
+	SpentAmount  float64       `json:"spent_amount"`
+	StartDate    time.Time     `json:"start_date"`
+	EndDate      time.Time     `json:"end_date"`
+	CategoryID   uint          `json:"category_id"`
+	Tags         []Tag         `gorm:"many2many:budget_tags;"`
+	Status       string        `gorm:"default:'active'"`
+	Recurring    bool          `gorm:"default:false"`
+	Period       string        `gorm:"default:'monthly'"`
+}
+
+func (budget *Budget) RemainingAmount() float64 {
+	return budget.Amount - budget.SpentAmount
+}
+
+func (budget *Budget) IsOverBudget() bool {
+	return budget.SpentAmount > budget.Amount
+}
+
+func (budget *Budget) ProgressPercentage() float64 {
+	return (budget.SpentAmount / budget.Amount) * 100
+}
+
+func (budget *Budget) IsOverDue() bool {
+	return budget.EndDate.Before(time.Now())
+}
+
+func (budget *Budget) DaysRemaining() int {
+	return int(time.Until(budget.EndDate).Hours() / 24)
+}
+
+func (budget *Budget) DailyTarget() float64 {
+	return budget.Amount / (budget.EndDate.Sub(budget.StartDate).Hours() / 24)
 }
 
 type BudgetCategory struct {
@@ -113,13 +145,23 @@ type User struct {
 	Password  string `json:"password" gorm:"type:varchar(256)"`
 }
 
-func (user *User) GenerateToken() (string, error) {
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": user.Email,
-		"id":    user.ID,
-	})
+type Claims struct {
+	jwt.RegisteredClaims
+	UserId int
+}
 
-	return claims.SignedString([]byte("secret"))
+func (user *User) GenerateToken() (string, error) {
+	claims := Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   user.Email,
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+		UserId: int(user.ID),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 }
 
 func (user *User) GetFullName() string {

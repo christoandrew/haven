@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/christo-andrew/haven/internal/api/responses"
+	"github.com/christo-andrew/haven/pkg/auth"
 	"github.com/christo-andrew/haven/pkg/pagination"
 	"github.com/christo-andrew/haven/pkg/utils"
 	"io"
@@ -30,6 +32,8 @@ import (
 // @Security AuthToken
 // @Param Authorization header string true "Authorization"
 func GetAllAccountsHandler(c *gin.Context, db *gorm.DB) {
+	userId := auth.GetUserIdFromContext(c)
+	fmt.Println(userId)
 	groupByAccountType, _ := strconv.ParseBool(c.Query("group_by_account_type"))
 	accounts := getAccounts(groupByAccountType, db)
 	response, err := serializers.NewAccountSerializer(accounts, true).Serialize()
